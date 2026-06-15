@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Octokit } from '@octokit/rest'
+import { config } from '@/lib/config'
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 })
 
-// Organizations to fetch repositories from
-const TARGET_ORGS = ['all-hands-ai', 'openhands']
+const excludedRepos = new Set(config.repos.exclude.map(repo => repo.trim().toLowerCase()))
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const specificOrg = searchParams.get('org')
 
     // Determine which organizations to fetch from
-    const orgsToFetch = specificOrg ? [specificOrg] : TARGET_ORGS
+    const orgsToFetch = specificOrg ? [specificOrg] : config.orgs
 
     console.log('Fetching repositories from organizations:', orgsToFetch)
 
@@ -61,19 +61,23 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter and format repositories
-    const formattedRepos = allRepositories
-      .filter(repo => !repo.archived && !repo.disabled)
-      .map(repo => ({
-        id: repo.id,
-        name: repo.name,
-        full_name: repo.full_name,
-        description: repo.description,
-        stargazers_count: repo.stargazers_count,
-        language: repo.language,
-        updated_at: repo.updated_at,
-        html_url: repo.html_url,
-      }))
-      .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0)) // Sort by stars
+    const formattedRepos = Array.from(
+      new Map(
+        allRepositories
+          .filter(repo => !repo.archived && !repo.disabled)
+          .filter(repo => !excludedRepos.has(repo.full_name.toLowerCase()))
+          .map(repo => [repo.full_name.toLowerCase(), {
+            id: repo.id,
+            name: repo.name,
+            full_name: repo.full_name,
+            description: repo.description,
+            stargazers_count: repo.stargazers_count,
+            language: repo.language,
+            updated_at: repo.updated_at,
+            html_url: repo.html_url,
+          }])
+      ).values()
+    ).sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0)) // Sort by stars
 
     console.log(`Total formatted repositories: ${formattedRepos.length}`)
 
@@ -90,49 +94,39 @@ export async function GET(request: NextRequest) {
       {
         id: 1,
         name: 'OpenHands',
-        full_name: 'all-hands-ai/OpenHands',
+        full_name: 'OpenHands/OpenHands',
         description: 'OpenHands: Code Less, Make More',
         stargazers_count: 35000,
         language: 'Python',
         updated_at: new Date().toISOString(),
-        html_url: 'https://github.com/all-hands-ai/OpenHands',
+        html_url: 'https://github.com/OpenHands/OpenHands',
       },
       {
         id: 2,
-        name: 'agent-sdk',
-        full_name: 'all-hands-ai/agent-sdk',
-        description: 'SDK for building AI agents',
-        stargazers_count: 500,
+        name: 'community-pr-dashboard',
+        full_name: 'OpenHands/community-pr-dashboard',
+        description: 'Dashboard for tracking community pull requests and review accountability',
+        stargazers_count: 0,
         language: 'TypeScript',
         updated_at: new Date().toISOString(),
-        html_url: 'https://github.com/all-hands-ai/agent-sdk',
+        html_url: 'https://github.com/OpenHands/community-pr-dashboard',
       },
       {
         id: 3,
-        name: 'SWE-bench',
-        full_name: 'all-hands-ai/SWE-bench',
-        description: 'Enhanced fork of SWE-bench, tailored for OpenHands ecosystem',
-        stargazers_count: 1000,
-        language: 'Python',
+        name: 'docs',
+        full_name: 'OpenHands/docs',
+        description: 'OpenHands documentation site',
+        stargazers_count: 0,
+        language: 'TypeScript',
         updated_at: new Date().toISOString(),
-        html_url: 'https://github.com/all-hands-ai/SWE-bench',
-      },
-      {
-        id: 4,
-        name: 'OpenHands-Cloud',
-        full_name: 'all-hands-ai/OpenHands-Cloud',
-        description: 'All Hands AI OpenHands Self-hosted Cloud',
-        stargazers_count: 200,
-        language: 'Smarty',
-        updated_at: new Date().toISOString(),
-        html_url: 'https://github.com/all-hands-ai/OpenHands-Cloud',
+        html_url: 'https://github.com/OpenHands/docs',
       },
     ]
 
     return NextResponse.json({
-      repositories: fallbackRepos,
-      total: fallbackRepos.length,
-      organizations: TARGET_ORGS,
+      repositories: fallbackRepos.filter(repo => !excludedRepos.has(repo.full_name.toLowerCase())),
+      total: fallbackRepos.filter(repo => !excludedRepos.has(repo.full_name.toLowerCase())).length,
+      organizations: config.orgs,
       error: 'Using fallback data due to API error',
     })
   }

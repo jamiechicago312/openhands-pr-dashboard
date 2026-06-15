@@ -24,16 +24,18 @@ jest.mock('@/lib/github', () => ({
     }
     resetAt: string;
   },
+  getExcludedLogins: jest.fn(),
   getOrgMembersGraphQL: jest.fn(),
   getOrgMembersREST: jest.fn(),
   getRepoCollaboratorsREST: jest.fn(),
 }));
 
 import { readFileSync } from 'fs';
-import { getOrgMembersGraphQL, getRepoCollaboratorsREST } from '@/lib/github';
+import { getExcludedLogins, getOrgMembersGraphQL, getRepoCollaboratorsREST } from '@/lib/github';
 import { buildEmployeesSet, buildMaintainersSet, buildRepoAuthorRoleSets } from '@/lib/employees';
 
 const mockReadFileSync = readFileSync as jest.MockedFunction<typeof readFileSync>;
+const mockGetExcludedLogins = getExcludedLogins as jest.MockedFunction<typeof getExcludedLogins>;
 const mockGetOrgMembersGraphQL = getOrgMembersGraphQL as jest.MockedFunction<typeof getOrgMembersGraphQL>;
 const mockGetRepoCollaboratorsREST = getRepoCollaboratorsREST as jest.MockedFunction<typeof getRepoCollaboratorsREST>;
 
@@ -60,6 +62,11 @@ beforeEach(() => {
     throw new Error(`Unexpected file read: ${pathString}`);
   });
 
+  mockGetExcludedLogins.mockResolvedValue([
+    { login: 'org-employee', reason: 'employee or org member' },
+    { login: 'removed-employee', reason: 'employee or org member' },
+    { login: 'renovate', reason: 'bot denylist' },
+  ]);
   mockGetOrgMembersGraphQL.mockResolvedValue(['org-employee', 'removed-employee']);
   mockGetRepoCollaboratorsREST.mockResolvedValue(['enyst', 'rbren', 'write-user']);
 });
@@ -70,6 +77,16 @@ describe('override-backed author role builders', () => {
 
     expect(employees).toEqual(new Set(['org-employee', 'added-employee']));
   });
+
+  it('falls back to org membership when the excluded-login source is unavailable', async () => {
+    mockGetExcludedLogins.mockRejectedValueOnce(new Error('source unavailable'));
+
+    const employees = await buildEmployeesSet();
+
+    expect(employees).toEqual(new Set(['org-employee', 'added-employee']));
+    expect(mockGetOrgMembersGraphQL).toHaveBeenCalledWith('test-org');
+  });
+
 
   it('applies maintainer allowlist and denylist overrides', async () => {
     const maintainers = await buildMaintainersSet();

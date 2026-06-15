@@ -8,7 +8,39 @@ import DashboardSkeleton from '@/components/DashboardSkeleton'
 import WhatsNew from '@/components/WhatsNew'
 import { Tooltip } from '@/components/Tooltip'
 import { DashboardData, FilterState } from '@/lib/types'
-import { DEFAULT_REPOS } from '@/lib/defaults'
+
+function formatDateInput(date: Date): string {
+  return date.toISOString().slice(0, 10)
+}
+
+function getDefaultDateRange() {
+  const endDate = new Date()
+  const startDate = new Date(endDate)
+  startDate.setUTCDate(startDate.getUTCDate() - 6)
+
+  return {
+    startDate: formatDateInput(startDate),
+    endDate: formatDateInput(endDate),
+  }
+}
+
+function createDefaultFilters(): FilterState {
+  const { startDate, endDate } = getDefaultDateRange()
+
+  return {
+    repositories: [],
+    labels: [],
+    ageRange: 'all',
+    startDate,
+    endDate,
+    status: 'needs-review',
+    noReviewers: false,
+    limit: 'all',
+    draftStatus: 'final',
+    authorType: 'all',
+    reviewer: 'all'
+  }
+}
 
 export default function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null)
@@ -19,28 +51,8 @@ export default function Dashboard() {
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const [allReviewers, setAllReviewers] = useState<string[]>([])
 
-  const [filters, setFilters] = useState<FilterState>({
-    repositories: DEFAULT_REPOS,
-    labels: [],
-    ageRange: 'all', // Default to All Time - no filtering
-    status: 'all',
-    noReviewers: false,
-    limit: 'all',
-    draftStatus: 'all',
-    authorType: 'all',
-    reviewer: 'all'
-  })
-  const [appliedFilters, setAppliedFilters] = useState<FilterState>({
-    repositories: DEFAULT_REPOS,
-    labels: [],
-    ageRange: 'all', // Default to All Time - no filtering
-    status: 'all',
-    noReviewers: false,
-    limit: 'all',
-    draftStatus: 'all',
-    authorType: 'all',
-    reviewer: 'all'
-  })
+  const [filters, setFilters] = useState<FilterState>(() => createDefaultFilters())
+  const [appliedFilters, setAppliedFilters] = useState<FilterState>(() => createDefaultFilters())
 
   const fetchData = useCallback(async (filtersToApply?: FilterState, { cacheBust = false } = {}) => {
     const targetFilters = filtersToApply || appliedFilters
@@ -58,6 +70,12 @@ export default function Dashboard() {
       }
       if (targetFilters.ageRange !== 'all') {
         params.append('age', targetFilters.ageRange)
+      }
+      if (targetFilters.startDate) {
+        params.append('startDate', targetFilters.startDate)
+      }
+      if (targetFilters.endDate) {
+        params.append('endDate', targetFilters.endDate)
       }
       if (targetFilters.status && targetFilters.status !== 'all') {
         params.append('status', targetFilters.status)
@@ -138,17 +156,7 @@ export default function Dashboard() {
   }, [fetchData])
 
   const handleClearFilters = () => {
-    const clearedFilters = {
-      repositories: [],
-      labels: [],
-      ageRange: 'all', // Default to All Time - no filtering
-      status: 'all',
-      noReviewers: false,
-      limit: 'all',
-      draftStatus: 'all',
-      authorType: 'all',
-      reviewer: 'all'
-    }
+    const clearedFilters = createDefaultFilters()
     setFilters(clearedFilters)
     setAppliedFilters(clearedFilters)
     fetchData(clearedFilters)
@@ -481,7 +489,7 @@ export default function Dashboard() {
         <section className="py-6">
           <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border rounded-lg p-5 shadow-sm`}>
             <h3 className={`text-sm font-semibold mb-4 ${darkMode ? 'text-white' : 'text-gray-900'}`}>Filters</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-9 gap-4 mb-4">
               <div className="flex flex-col">
                 <label className={`text-sm font-medium mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Repository</label>
                 <RepositorySelector
@@ -498,25 +506,40 @@ export default function Dashboard() {
               </div>
 
               <div className="flex flex-col">
-                <label className={`text-sm font-medium mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Age</label>
-                <CustomDropdown
-                  options={[
-                    { value: 'all', label: 'All Time' },
-                    { value: '0-24', label: '0-24 hours' },
-                    { value: '2-days', label: 'Last 2 days' },
-                    { value: '3-days', label: 'Last 3 days' },
-                    { value: '7-days', label: 'Last 7 days' },
-                    { value: '30-days', label: 'Last 30 days' }
-                  ]}
-                  value={filters.ageRange}
-                  onChange={(value) => {
-                    const newFilters = { ...filters, ageRange: value as string }
+                <label className={`text-sm font-medium mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Ready From</label>
+                <input
+                  type="date"
+                  className={`px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    darkMode
+                      ? 'bg-gray-700 border-gray-600 text-white'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
+                  value={filters.startDate || ''}
+                  onChange={(e) => {
+                    const newFilters = { ...filters, startDate: e.target.value, ageRange: 'all' }
                     setFilters(newFilters)
                     setAppliedFilters(newFilters)
                     fetchData(newFilters)
                   }}
-                  placeholder="All Time"
-                  darkMode={darkMode}
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className={`text-sm font-medium mb-1.5 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Ready To</label>
+                <input
+                  type="date"
+                  className={`px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    darkMode
+                      ? 'bg-gray-700 border-gray-600 text-white'
+                      : 'bg-white border-gray-300 text-gray-900'
+                  }`}
+                  value={filters.endDate || ''}
+                  onChange={(e) => {
+                    const newFilters = { ...filters, endDate: e.target.value, ageRange: 'all' }
+                    setFilters(newFilters)
+                    setAppliedFilters(newFilters)
+                    fetchData(newFilters)
+                  }}
                 />
               </div>
 

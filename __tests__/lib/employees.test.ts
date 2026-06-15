@@ -27,6 +27,12 @@ describe('getAuthorType', () => {
     expect(getAuthorType('dependabot[bot]', employeesSet, 'NONE', repoAuthorRoleSets)).toBe('bot');
   });
 
+  it('classifies explicitly listed bot accounts as bot', () => {
+    expect(getAuthorType('openhands', employeesSet, 'NONE', repoAuthorRoleSets)).toBe('bot');
+    expect(getAuthorType('smolpaws', employeesSet, 'NONE', repoAuthorRoleSets)).toBe('bot');
+  });
+
+
   it('uses MEMBER association as a fallback employee signal', () => {
     expect(getAuthorType('member-only', new Set(), 'MEMBER', repoAuthorRoleSets)).toBe('employee');
   });
