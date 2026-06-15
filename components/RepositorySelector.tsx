@@ -67,17 +67,17 @@ export default function RepositorySelector({ value, onChange, className = '', da
         {
           id: 1,
           name: 'OpenHands',
-          full_name: 'All-Hands-AI/OpenHands',
+          full_name: 'OpenHands/OpenHands',
           description: 'OpenHands: Code Less, Make More',
           stargazers_count: 35000,
           language: 'Python'
         },
         {
           id: 2,
-          name: 'agent-sdk',
-          full_name: 'All-Hands-AI/agent-sdk',
-          description: 'SDK for building AI agents',
-          stargazers_count: 500,
+          name: 'community-pr-dashboard',
+          full_name: 'OpenHands/community-pr-dashboard',
+          description: 'Dashboard for community PR review accountability',
+          stargazers_count: 0,
           language: 'TypeScript'
         }
       ])

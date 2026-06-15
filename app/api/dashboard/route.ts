@@ -5,12 +5,22 @@ import { buildEmployeesSet, buildRepoAuthorRoleSets } from '@/lib/employees';
 import { RateLimitError, getOpenPRsGraphQL, getRecentlyMergedPRsWithReviews, getAllPRReviewStats, ReviewStatsData, CommunityPRReviewData, OrgMemberPRReviewData, BotPRReviewData } from '@/lib/github';
 import { transformPR, computeDashboardData, computeCommunityReviewerStats, computeOrgMemberReviewerStats, computeBotReviewerStats } from '@/lib/compute';
 import { PR } from '@/lib/types';
-import { DEFAULT_REPOS } from '@/lib/defaults';
+import { getDefaultRepos } from '@/lib/defaults';
 
 export const dynamic = 'force-dynamic';
 
-function resolveRepos(targetRepos: string[]): string[] {
-  return targetRepos.length > 0 ? targetRepos : DEFAULT_REPOS;
+async function resolveRepos(targetRepos: string[]): Promise<string[]> {
+  return targetRepos.length > 0 ? targetRepos : getDefaultRepos();
+}
+
+function parseDateBoundary(dateValue: string | null, endOfDay = false): number | null {
+  if (!dateValue) {
+    return null;
+  }
+
+  const isoDate = `${dateValue}T${endOfDay ? '23:59:59.999' : '00:00:00.000'}Z`;
+  const timestamp = new Date(isoDate).getTime();
+  return Number.isNaN(timestamp) ? null : timestamp;
 }
 
 export async function GET(request: NextRequest) {
@@ -20,6 +30,8 @@ export async function GET(request: NextRequest) {
     const reposParam = searchParams.get('repos');
     const labelsParam = searchParams.get('labels');
     const ageParam = searchParams.get('age');
+    const startDateParam = searchParams.get('startDate');
+    const endDateParam = searchParams.get('endDate');
     const statusParam = searchParams.get('status');
     const noReviewersParam = searchParams.get('noReviewers');
     const limitParam = searchParams.get('limit');
@@ -27,25 +39,23 @@ export async function GET(request: NextRequest) {
     const authorTypeParam = searchParams.get('authorType');
     const reviewerParam = searchParams.get('reviewer');
 
-    // Parse filters
     const targetRepos = reposParam
-      ? reposParam.split(',').map(r => r.trim())
-      : config.repos.include.length > 0
-        ? config.repos.include
-        : []; // Will auto-discover if empty
+      ? reposParam.split(',').map(r => r.trim()).filter(Boolean)
+      : [];
 
     const labelFilters = labelsParam
-      ? labelsParam.split(',').map(l => l.trim().toLowerCase())
+      ? labelsParam.split(',').map(l => l.trim().toLowerCase()).filter(Boolean)
       : [];
 
     const cacheBustParam = searchParams.get('cacheBust');
 
-    // Create cache key based on filters
     const cacheKey = `dashboard:${JSON.stringify({
       orgs: config.orgs,
       repos: targetRepos,
       labels: labelFilters,
       age: ageParam,
+      startDate: startDateParam,
+      endDate: endDateParam,
       status: statusParam,
       noReviewers: noReviewersParam,
       limit: limitParam,
@@ -56,7 +66,7 @@ export async function GET(request: NextRequest) {
     })}`;
 
     const result = await cache.withCache(cacheKey, config.cache.ttlSeconds, async () => {
-      const reposToFetch = resolveRepos(targetRepos);
+      const reposToFetch = await resolveRepos(targetRepos);
       const employeesSet = await buildEmployeesSet();
 
       // Phase 2: for every repo, run its three fetches in parallel; run all repos in parallel.
@@ -132,6 +142,30 @@ export async function GET(request: NextRequest) {
       if (authorTypeParam && authorTypeParam !== 'all') {
         filteredPrs = filteredPrs.filter(pr => pr.authorType === authorTypeParam);
       }
+
+      const startDateBoundary = parseDateBoundary(startDateParam);
+      const endDateBoundary = parseDateBoundary(endDateParam, true);
+
+      if (startDateBoundary !== null || endDateBoundary !== null) {
+        filteredPrs = filteredPrs.filter(pr => {
+          const readyForReviewTime = new Date(pr.readyForReviewAt).getTime();
+
+          if (Number.isNaN(readyForReviewTime)) {
+            return false;
+          }
+
+          if (startDateBoundary !== null && readyForReviewTime < startDateBoundary) {
+            return false;
+          }
+
+          if (endDateBoundary !== null && readyForReviewTime > endDateBoundary) {
+            return false;
+          }
+
+          return true;
+        });
+      }
+
 
       // Apply age filter if provided
       if (ageParam && ageParam !== 'all') {
@@ -293,7 +327,13 @@ export async function GET(request: NextRequest) {
         totalPrs: result.totalPrs,
         employeeCount: result.employeeCount,
         cacheKey,
-        filters: { repos: targetRepos, labels: labelFilters, age: ageParam },
+        filters: {
+          repos: targetRepos,
+          labels: labelFilters,
+          age: ageParam,
+          startDate: startDateParam,
+          endDate: endDateParam,
+        },
       };
     }
 

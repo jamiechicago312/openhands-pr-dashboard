@@ -81,6 +81,8 @@ export type FilterState = {
   repositories: string[];
   labels: string[];
   ageRange: string;
+  startDate?: string;
+  endDate?: string;
   status?: string;
   noReviewers?: boolean;
   limit?: string;

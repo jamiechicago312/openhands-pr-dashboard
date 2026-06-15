@@ -7,7 +7,7 @@ import { buildEmployeesSet, buildRepoAuthorRoleSets } from '@/lib/employees';
 import { getOpenPRsGraphQL } from '@/lib/github';
 import { transformPR, computeReviewStats } from '@/lib/compute';
 import { PR } from '@/lib/types';
-import { DEFAULT_REPOS } from '@/lib/defaults';
+import { getDefaultRepos } from '@/lib/defaults';
 
 export async function GET(_request: NextRequest) {
   try {
@@ -22,7 +22,7 @@ export async function GET(_request: NextRequest) {
       // Get all PRs from configured repositories
       const allPrs: PR[] = [];
       
-      const reposToFetch = config.repos.include.length > 0 ? config.repos.include : DEFAULT_REPOS;
+      const reposToFetch = await getDefaultRepos();
       
       for (const repoPath of reposToFetch) {
         const [owner, repo] = repoPath.split('/');

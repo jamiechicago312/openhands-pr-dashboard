@@ -38,6 +38,10 @@ jest.mock('@/lib/cache', () => ({
   },
 }));
 
+jest.mock('@/lib/defaults', () => ({
+  getDefaultRepos: jest.fn(),
+}));
+
 jest.mock('@/lib/employees', () => ({
   buildEmployeesSet: jest.fn(),
   buildRepoAuthorRoleSets: jest.fn(),
@@ -72,6 +76,7 @@ import {
   getAllPRReviewStats,
 } from '@/lib/github';
 import { buildEmployeesSet, buildRepoAuthorRoleSets } from '@/lib/employees';
+import { getDefaultRepos } from '@/lib/defaults';
 import {
   transformPR,
   computeDashboardData,
@@ -83,6 +88,7 @@ import {
 const mockGetOpenPRs        = getOpenPRsGraphQL               as jest.MockedFunction<typeof getOpenPRsGraphQL>;
 const mockGetMergedPRs      = getRecentlyMergedPRsWithReviews as jest.MockedFunction<typeof getRecentlyMergedPRsWithReviews>;
 const mockGetAllReviewStats = getAllPRReviewStats             as jest.MockedFunction<typeof getAllPRReviewStats>;
+const mockGetDefaultRepos   = getDefaultRepos                 as jest.MockedFunction<typeof getDefaultRepos>;
 const mockBuildEmployeesSet = buildEmployeesSet               as jest.MockedFunction<typeof buildEmployeesSet>;
 const mockBuildRepoAuthorRoleSets = buildRepoAuthorRoleSets   as jest.MockedFunction<typeof buildRepoAuthorRoleSets>;
 const mockTransformPR             = transformPR               as jest.MockedFunction<typeof transformPR>;
@@ -106,6 +112,7 @@ function makeTransformedPR(overrides: Record<string, unknown> = {}) {
     labels: [],
     authorType: 'community',
     ageHours: 0,
+    readyForReviewAt: '2026-06-10T12:00:00Z',
     needsFirstResponse: false,
     firstReviewAt: null,
     isDraft: false,
@@ -134,6 +141,7 @@ const EMPTY_DASHBOARD_DATA = {
 beforeEach(() => {
   jest.clearAllMocks();
 
+  mockGetDefaultRepos.mockResolvedValue(['OpenHands/OpenHands', 'OpenHands/docs']);
   mockBuildEmployeesSet.mockResolvedValue(new Set<string>());
   mockBuildRepoAuthorRoleSets.mockResolvedValue({ maintainers: new Set<string>(), collaborators: new Set<string>() });
   mockGetOpenPRs.mockResolvedValue([]);
@@ -165,17 +173,17 @@ describe('GET /api/dashboard — resolveRepos', () => {
     expect(mockGetOpenPRs).toHaveBeenCalledWith('owner', 'beta');
   });
 
-  it('uses DEFAULT_REPOS when no repos param is supplied', async () => {
+  it('uses getDefaultRepos when no repos param is supplied', async () => {
+    mockGetDefaultRepos.mockResolvedValueOnce(['OpenHands/OpenHands', 'OpenHands/community-pr-dashboard']);
+
     const res = await GET(makeRequest());
 
     expect(res.status).toBe(200);
+    expect(mockGetDefaultRepos).toHaveBeenCalledTimes(1);
     const fetched = mockGetOpenPRs.mock.calls.map(([owner, repo]) => `${owner}/${repo}`);
     expect(fetched).toEqual([
       'OpenHands/OpenHands',
-      'OpenHands/software-agent-sdk',
-      'OpenHands/OpenHands-CLI',
-      'OpenHands/docs',
-      'OpenHands/benchmarks',
+      'OpenHands/community-pr-dashboard',
     ]);
   });
 });
@@ -204,6 +212,26 @@ describe('GET /api/dashboard — parallel fetch', () => {
 
     expect(res.status).toBe(200);
     expect(body.totalPrs).toBe(3);
+  });
+});
+
+describe('GET /api/dashboard — date filtering', () => {
+  it('filters PRs by ready-for-review date range when startDate and endDate are provided', async () => {
+    mockGetOpenPRs.mockResolvedValue([{ number: 1 }, { number: 2 }]);
+    mockTransformPR
+      .mockImplementationOnce(() => makeTransformedPR({ number: 1, readyForReviewAt: '2026-06-10T12:00:00Z' }) as any)
+      .mockImplementationOnce(() => makeTransformedPR({ number: 2, readyForReviewAt: '2026-05-20T12:00:00Z' }) as any);
+
+    const res = await GET(makeRequest({
+      repos: 'owner/repo1',
+      startDate: '2026-06-01',
+      endDate: '2026-06-30',
+    }));
+    const body = await res.json();
+
+    expect(res.status).toBe(200);
+    expect(body.prs).toHaveLength(1);
+    expect(body.prs[0].number).toBe(1);
   });
 });
 

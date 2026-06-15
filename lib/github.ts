@@ -303,6 +303,31 @@ export async function getAllRepositoriesFromOrgs(orgs: string[]): Promise<string
   return allRepos;
 }
 
+export type ExcludedLoginEntry = {
+  login: string;
+  reason: string;
+};
+
+export async function getExcludedLogins(): Promise<ExcludedLoginEntry[]> {
+  const response = await fetchGitHub(
+    'https://raw.githubusercontent.com/OpenHands/champions-list/main/data/excluded-logins.json'
+  );
+
+  const data = await response.json() as {
+    logins?: Array<{ login?: string; reason?: string }>;
+  };
+
+  return (data.logins ?? [])
+    .filter((entry): entry is { login: string; reason: string } =>
+      typeof entry?.login === 'string' && typeof entry?.reason === 'string'
+    )
+    .map(entry => ({
+      login: entry.login,
+      reason: entry.reason,
+    }));
+}
+
+
 export type CompletedReviewData = {
   reviewerLogin: string;
   authorAssociation: string;

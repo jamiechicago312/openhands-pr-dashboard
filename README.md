@@ -59,7 +59,7 @@ Visit [http://localhost:3000/api/test](http://localhost:3000/api/test) to verify
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `GITHUB_TOKEN` | GitHub Personal Access Token | Required |
-| `ORGS` | Comma-separated list of GitHub organizations | `All-Hands-AI` |
+| `ORGS` | Comma-separated list of GitHub organizations | `OpenHands` |
 | `REPOS_INCLUDE` | Specific repositories to include (owner/repo format) | Auto-discover |
 | `REPOS_EXCLUDE` | Repositories to exclude from auto-discovery | None |
 | `SLA_HOURS_FIRST_RESPONSE` | SLA for first human response (hours) | `24` |
@@ -69,7 +69,7 @@ Visit [http://localhost:3000/api/test](http://localhost:3000/api/test) to verify
 
 ### Employee Configuration
 
-Edit `config/employees.json` to override employee detection:
+Employee detection is sourced from `OpenHands/champions-list/data/excluded-logins.json`, with `config/employees.json` available for local allowlist or denylist overrides:
 
 ```json
 {
