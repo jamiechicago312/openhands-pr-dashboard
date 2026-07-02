@@ -5,6 +5,7 @@ import PrTable from '@/components/PrTable'
 import RepositorySelector from '@/components/RepositorySelector'
 import CustomDropdown from '@/components/CustomDropdown'
 import DashboardSkeleton from '@/components/DashboardSkeleton'
+import TickerBanner from '@/components/TickerBanner'
 import WhatsNew from '@/components/WhatsNew'
 import { Tooltip } from '@/components/Tooltip'
 import { DashboardData, FilterState } from '@/lib/types'
@@ -135,25 +136,14 @@ export default function Dashboard() {
     fetchData()
   }, [fetchData])
 
-  // Set up auto-refresh interval
+  // Auto-refresh is disabled in snapshot mode — the data never changes.
   useEffect(() => {
-    // Clear any existing interval
-    if (refreshIntervalRef.current) {
-      clearInterval(refreshIntervalRef.current)
-    }
-
-    // Set up new interval
-    refreshIntervalRef.current = setInterval(() => {
-      fetchData()
-    }, 120000) // 2 minutes
-
-    // Cleanup on unmount
     return () => {
       if (refreshIntervalRef.current) {
         clearInterval(refreshIntervalRef.current)
       }
     }
-  }, [fetchData])
+  }, [])
 
   const handleClearFilters = () => {
     const clearedFilters = createDefaultFilters()
@@ -187,6 +177,15 @@ export default function Dashboard() {
 
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+      <TickerBanner
+        message={(() => {
+          const raw = data?.lastUpdated || '2026-07-02T02:58:14Z';
+          const d = new Date(raw);
+          const utcTime = d.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+          const localTime = '2026-07-01 21:58 UTC-5';
+          return `Static snapshot of the OpenHands PR Review Dashboard — last updated ${localTime} (${utcTime}) — this is a sample of how the live dashboard looked at that moment, not live data`;
+        })()}
+      />
       {/* Header - Matching wireframe exactly */}
       <header className={`${darkMode ? 'bg-gray-800' : 'bg-white'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
         <div className="max-w-7xl mx-auto px-5">
@@ -734,9 +733,9 @@ export default function Dashboard() {
 
         {/* Footer */}
         <footer className={`py-6 text-center text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-          Data refreshed every 2 minutes •
+          Static snapshot — not live data •
           <span className="ml-1">
-            Last updated: {data?.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : 'Never'}
+            Snapshot taken: {data?.lastUpdated ? new Date(data.lastUpdated).toLocaleString() : '2026-07-01 21:58 UTC-5'}
           </span>
         </footer>
       </div>
