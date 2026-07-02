@@ -1,210 +1,76 @@
-# OpenHands PR Review Dashboard
+# OpenHands PR Review Dashboard — Static Snapshot
 
-A Next.js dashboard for monitoring community PRs and review accountability in the OpenHands project.
+A Next.js dashboard for monitoring community PRs and review accountability in the
+OpenHands project, frozen at a single point in time.
 
-## Features
+> **This deployment is a sample.** It is backed by a static JSON snapshot of the
+> live dashboard rather than live GitHub API calls. The ticker banner at the top
+> of the page shows the snapshot timestamp.
 
-- **Community PR Monitoring**: Track open PRs from external contributors
-- **SLA Tracking**: Monitor response times and review times against defined SLAs
-- **Reviewer Accountability**: Track reviewer assignments and pending review loads
-- **Real-time Data**: Cached GitHub API data with configurable refresh intervals
-- **Filtering**: Filter PRs by repository, labels, and age ranges
+## What's included
 
-## Quick Start
+- `snapshot/dashboard.json` — KPIs, all open PRs, and reviewer statistics
+  captured at `2026-07-02T02:58:14Z` (2026-07-01 21:58 UTC-5).
+- `snapshot/repositories.json` — the 38 active public repositories in the
+  OpenHands organisation at the time of the snapshot.
+- `scripts/snapshot.py` — Python script that re-creates the snapshot using the
+  same GraphQL queries the live dashboard uses. Requires a `GITHUB_TOKEN` env
+  var with `read:org` and `public_repo` scopes.
+- `app/api/dashboard/route.ts` — read-only API route that loads the snapshot
+  and applies the same client-side filters (age, status, labels, etc.).
+- `app/api/repositories/route.ts` — read-only API route that returns the
+  repository list from the snapshot.
+- `components/TickerBanner.tsx` — the marquee banner at the top of the page
+  that reminds visitors this is a static sample.
 
-### 1. Environment Setup
-
-Copy the example environment file and configure it:
-
-```bash
-cp .env.local.example .env.local
-```
-
-Edit `.env.local` and set your GitHub token:
-
-```env
-GITHUB_TOKEN=your_github_personal_access_token_here
-```
-
-### 2. GitHub Token Setup
-
-Create a GitHub Personal Access Token with these permissions:
-- `read:org` (to fetch organization members)
-- `public_repo` (to read public repository data)
-
-Get your token from: https://github.com/settings/tokens
-
-### 3. Install Dependencies
+## Quick Start (snapshot mode)
 
 ```bash
 npm install
-```
-
-### 4. Run Development Server
-
-```bash
 npm run dev
+# open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
+No environment variables are required at runtime — the data is hard-coded into
+`snapshot/dashboard.json`.
 
-### 5. Test API Connection
+## Regenerating the snapshot
 
-Visit [http://localhost:3000/api/test](http://localhost:3000/api/test) to verify your GitHub token is working.
-
-## Configuration
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `GITHUB_TOKEN` | GitHub Personal Access Token | Required |
-| `ORGS` | Comma-separated list of GitHub organizations | `OpenHands` |
-| `REPOS_INCLUDE` | Specific repositories to include (owner/repo format) | Auto-discover |
-| `REPOS_EXCLUDE` | Repositories to exclude from auto-discovery | None |
-| `SLA_HOURS_FIRST_RESPONSE` | SLA for first human response (hours) | `24` |
-| `SLA_HOURS_FIRST_REVIEW` | SLA for first review (hours) | `48` |
-| `CACHE_TTL_SECONDS` | Cache duration for API responses | `120` |
-| `MAX_PR_PAGES_PER_REPO` | Max GitHub API pages per repository | `10` |
-
-### Employee Configuration
-
-Employee detection is sourced from `OpenHands/champions-list/data/excluded-logins.json`, with `config/employees.json` available for local allowlist or denylist overrides:
-
-```json
-{
-  "allowlist": ["username1", "username2"],
-  "denylist": ["bot-account"]
-}
-```
-
-## API Endpoints
-
-- `GET /api/dashboard` - Main dashboard data with KPIs and PR list
-- `GET /api/review-stats` - Review statistics and reviewer loads
-- `GET /api/test` - Test GitHub API connection
-- `GET /api/config/employees` - Employee statistics (debug only)
-
-### Query Parameters
-
-**Dashboard API (`/api/dashboard`)**:
-- `repos` - Filter by repositories (comma-separated)
-- `labels` - Filter by labels (comma-separated)
-- `age` - Filter by age range (`0-24`, `24-48`, `48-96`, `96+`)
-- `debug` - Include debug information
-
-## Architecture
-
-### Tech Stack
-- **Next.js 14** with App Router
-- **TypeScript** for type safety
-- **Tailwind CSS** for styling
-- **GitHub GraphQL API** for data fetching
-
-### Key Components
-- `lib/github.ts` - GitHub API client with GraphQL and REST support
-- `lib/employees.ts` - Employee detection and management
-- `lib/compute.ts` - PR data transformation and KPI calculations
-- `lib/cache.ts` - In-memory caching system
-- `components/` - Reusable React components
-
-### Data Flow
-1. API routes fetch data from GitHub using GraphQL
-2. Employee set is built from organization memberships
-3. PR data is transformed and enriched with computed fields
-4. KPIs are calculated from the processed data
-5. Results are cached to reduce API usage
-6. Frontend displays data with real-time updates
-
-## Development
-
-### Project Structure
-```
-├── app/
-│   ├── api/           # API routes
-│   ├── globals.css    # Global styles
-│   ├── layout.tsx     # Root layout
-│   └── page.tsx       # Main dashboard page
-├── components/        # React components
-├── lib/              # Utility libraries
-├── config/           # Configuration files
-└── public/           # Static assets
-```
-
-### Adding New Features
-
-1. **New API Endpoint**: Add route in `app/api/`
-2. **New Component**: Add to `components/` directory
-3. **New Utility**: Add to `lib/` directory
-4. **Configuration**: Update `lib/config.ts` and `.env.local.example`
-
-### Testing
-
-Test individual API endpoints:
-```bash
-curl http://localhost:3000/api/test
-curl http://localhost:3000/api/dashboard
-curl http://localhost:3000/api/review-stats
-```
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Connect your GitHub repository to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
-
-### Docker
+If you want to capture a new point-in-time snapshot of the live dashboard:
 
 ```bash
-# Build image
-docker build -t openhands-dashboard .
-
-# Run container
-docker run -p 3000:3000 --env-file .env.local openhands-dashboard
+export GITHUB_TOKEN=ghp_...
+npm run snapshot
 ```
 
-### Manual Deployment
+This will rewrite `snapshot/dashboard.json` and `snapshot/repositories.json`.
+The `SNAPSHOT_TIMESTAMP` constant in `scripts/snapshot.py` controls the
+frozen time used for SLA/age calculations.
 
-```bash
-npm run build
-npm start
-```
+## Filters
 
-## Troubleshooting
+The dashboard still supports the same filters as the live version: repository,
+status, author type, draft status, age range, date range, labels, and
+reviewer. Filter values are applied server-side in
+`app/api/dashboard/route.ts` against the in-memory snapshot.
 
-### Common Issues
+## Deploying to Vercel
 
-1. **"GITHUB_TOKEN environment variable is required"**
-   - Ensure `.env.local` exists with valid `GITHUB_TOKEN`
+1. Push this repository to GitHub.
+2. Import the project in Vercel — no environment variables are required.
+3. Vercel will run `next build` and serve the snapshot from the static API
+   routes.
 
-2. **"GraphQL error: Bad credentials"**
-   - Check that your GitHub token has correct permissions
-   - Verify token hasn't expired
+The total payload is roughly 750 KB of JSON plus the static Next.js assets, so
+deployment and cold starts are fast.
 
-3. **Empty dashboard or no PRs**
-   - Check that organizations/repositories exist and are accessible
-   - Verify employee detection is working via `/api/config/employees?debug=true`
+## Tech stack
 
-4. **Rate limiting errors**
-   - Reduce `MAX_PR_PAGES_PER_REPO` in environment
-   - Increase `CACHE_TTL_SECONDS` to reduce API calls
-
-### Debug Mode
-
-Add `?debug=true` to API endpoints for additional debugging information:
-- `/api/dashboard?debug=true`
-- `/api/config/employees?debug=true`
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+- Next.js 16 (App Router)
+- TypeScript 5
+- Tailwind CSS 3
+- Python 3 (only needed for the snapshot script)
 
 ## License
 
-MIT License - see LICENSE file for details.
+MIT — see `LICENSE`.

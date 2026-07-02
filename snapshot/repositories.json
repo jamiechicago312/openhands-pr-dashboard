@@ -1,0 +1,389 @@
+{
+  "repositories": [
+    {
+      "id": 1,
+      "name": "OpenHands",
+      "full_name": "OpenHands/OpenHands",
+      "description": "\ud83d\ude4c OpenHands: AI-Driven Development",
+      "stargazers_count": 79045,
+      "language": "Python",
+      "updated_at": "2026-07-02T02:57:16Z",
+      "html_url": "https://github.com/OpenHands/OpenHands"
+    },
+    {
+      "id": 2,
+      "name": "software-agent-sdk",
+      "full_name": "OpenHands/software-agent-sdk",
+      "description": "A clean, modular SDK for building AI agents with OpenHands V1.",
+      "stargazers_count": 856,
+      "language": "Python",
+      "updated_at": "2026-07-02T01:50:04Z",
+      "html_url": "https://github.com/OpenHands/software-agent-sdk"
+    },
+    {
+      "id": 13,
+      "name": "open-operator",
+      "full_name": "OpenHands/open-operator",
+      "description": "Open-source resources on agents for computer use.",
+      "stargazers_count": 421,
+      "language": null,
+      "updated_at": "2026-06-30T22:16:46Z",
+      "html_url": "https://github.com/OpenHands/open-operator"
+    },
+    {
+      "id": 14,
+      "name": "OpenHands-CLI",
+      "full_name": "OpenHands/OpenHands-CLI",
+      "description": "Lightweight OpenHands CLI in a binary executable",
+      "stargazers_count": 208,
+      "language": "Python",
+      "updated_at": "2026-06-30T22:16:12Z",
+      "html_url": "https://github.com/OpenHands/OpenHands-CLI"
+    },
+    {
+      "id": 9,
+      "name": "agent-canvas",
+      "full_name": "OpenHands/agent-canvas",
+      "description": "OpenHands Agent Canvas is a Open Source AI coding platform. Start locally, connect your tools, and automate workflows.",
+      "stargazers_count": 132,
+      "language": "TypeScript",
+      "updated_at": "2026-07-01T15:28:25Z",
+      "html_url": "https://github.com/OpenHands/agent-canvas"
+    },
+    {
+      "id": 4,
+      "name": "extensions",
+      "full_name": "OpenHands/extensions",
+      "description": "Public registry for OpenHands extensions.",
+      "stargazers_count": 118,
+      "language": "Python",
+      "updated_at": "2026-07-01T22:50:01Z",
+      "html_url": "https://github.com/OpenHands/extensions"
+    },
+    {
+      "id": 3,
+      "name": "ToM-SWE",
+      "full_name": "OpenHands/ToM-SWE",
+      "description": "The theory of mind module for the SWE agent",
+      "stargazers_count": 114,
+      "language": "Python",
+      "updated_at": "2026-07-01T23:03:31Z",
+      "html_url": "https://github.com/OpenHands/ToM-SWE"
+    },
+    {
+      "id": 16,
+      "name": "benchmarks",
+      "full_name": "OpenHands/benchmarks",
+      "description": "Evaluation harness for OpenHands V1.",
+      "stargazers_count": 93,
+      "language": "Python",
+      "updated_at": "2026-06-30T16:58:12Z",
+      "html_url": "https://github.com/OpenHands/benchmarks"
+    },
+    {
+      "id": 22,
+      "name": "codescout",
+      "full_name": "OpenHands/codescout",
+      "description": "Repo for collaboration on OSS agentic code search",
+      "stargazers_count": 67,
+      "language": "Python",
+      "updated_at": "2026-06-17T07:08:44Z",
+      "html_url": "https://github.com/OpenHands/codescout"
+    },
+    {
+      "id": 8,
+      "name": "OpenHands-Cloud",
+      "full_name": "OpenHands/OpenHands-Cloud",
+      "description": "All Hands AI OpenHands Self-hosted Cloud",
+      "stargazers_count": 52,
+      "language": "Python",
+      "updated_at": "2026-07-01T17:40:20Z",
+      "html_url": "https://github.com/OpenHands/OpenHands-Cloud"
+    },
+    {
+      "id": 17,
+      "name": "trajectory-visualizer",
+      "full_name": "OpenHands/trajectory-visualizer",
+      "description": null,
+      "stargazers_count": 47,
+      "language": "TypeScript",
+      "updated_at": "2026-06-30T16:49:16Z",
+      "html_url": "https://github.com/OpenHands/trajectory-visualizer"
+    },
+    {
+      "id": 20,
+      "name": "openhands-chrome-extension",
+      "full_name": "OpenHands/openhands-chrome-extension",
+      "description": null,
+      "stargazers_count": 32,
+      "language": "JavaScript",
+      "updated_at": "2026-06-18T07:55:14Z",
+      "html_url": "https://github.com/OpenHands/openhands-chrome-extension"
+    },
+    {
+      "id": 28,
+      "name": "vulnerability-fixer",
+      "full_name": "OpenHands/vulnerability-fixer",
+      "description": null,
+      "stargazers_count": 27,
+      "language": "TypeScript",
+      "updated_at": "2026-05-27T05:57:38Z",
+      "html_url": "https://github.com/OpenHands/vulnerability-fixer"
+    },
+    {
+      "id": 19,
+      "name": "critic-rubrics",
+      "full_name": "OpenHands/critic-rubrics",
+      "description": "Official repo for paper \"A Rubric-Supervised Critic from Sparse Real-World Outcomes\". Type-safe function-calling-based LLM-as-judge evaluation framework for agent behavior prediction and analysis.",
+      "stargazers_count": 19,
+      "language": "Python",
+      "updated_at": "2026-06-27T12:00:34Z",
+      "html_url": "https://github.com/OpenHands/critic-rubrics"
+    },
+    {
+      "id": 30,
+      "name": "agent-analysis",
+      "full_name": "OpenHands/agent-analysis",
+      "description": "A collection of scripts and tools for analyzing SWE agents.",
+      "stargazers_count": 16,
+      "language": "Jupyter Notebook",
+      "updated_at": "2026-03-03T07:57:13Z",
+      "html_url": "https://github.com/OpenHands/agent-analysis"
+    },
+    {
+      "id": 23,
+      "name": "litellm",
+      "full_name": "OpenHands/litellm",
+      "description": "Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI format - [Bedrock, Azure, OpenAI, VertexAI, Cohere, Anthropic, Sagemaker, HuggingFace, Replicate, Groq]",
+      "stargazers_count": 15,
+      "language": "Python",
+      "updated_at": "2026-06-13T17:35:13Z",
+      "html_url": "https://github.com/OpenHands/litellm"
+    },
+    {
+      "id": 10,
+      "name": "typescript-client",
+      "full_name": "OpenHands/typescript-client",
+      "description": null,
+      "stargazers_count": 14,
+      "language": "TypeScript",
+      "updated_at": "2026-07-01T10:47:54Z",
+      "html_url": "https://github.com/OpenHands/typescript-client"
+    },
+    {
+      "id": 7,
+      "name": "docs",
+      "full_name": "OpenHands/docs",
+      "description": "Aggregated documentations across multiple repos, including OpenHands, agent-sdk, etc.",
+      "stargazers_count": 8,
+      "language": "MDX",
+      "updated_at": "2026-07-01T18:39:09Z",
+      "html_url": "https://github.com/OpenHands/docs"
+    },
+    {
+      "id": 18,
+      "name": "openhands-index-results",
+      "full_name": "OpenHands/openhands-index-results",
+      "description": "Results for the OpenHands Index",
+      "stargazers_count": 8,
+      "language": "Python",
+      "updated_at": "2026-06-30T15:36:58Z",
+      "html_url": "https://github.com/OpenHands/openhands-index-results"
+    },
+    {
+      "id": 36,
+      "name": "BrowserGym",
+      "full_name": "OpenHands/BrowserGym",
+      "description": "\ud83c\udf0e\ud83d\udcaa BrowserGym, a Gym environment for web task automation",
+      "stargazers_count": 6,
+      "language": "Python",
+      "updated_at": "2025-11-04T00:26:15Z",
+      "html_url": "https://github.com/OpenHands/BrowserGym"
+    },
+    {
+      "id": 6,
+      "name": "automation",
+      "full_name": "OpenHands/automation",
+      "description": "OpenHands automation service",
+      "stargazers_count": 5,
+      "language": "Python",
+      "updated_at": "2026-07-01T19:15:27Z",
+      "html_url": "https://github.com/OpenHands/automation"
+    },
+    {
+      "id": 31,
+      "name": "cve-demo",
+      "full_name": "OpenHands/cve-demo",
+      "description": null,
+      "stargazers_count": 3,
+      "language": "Python",
+      "updated_at": "2026-01-16T10:49:46Z",
+      "html_url": "https://github.com/OpenHands/cve-demo"
+    },
+    {
+      "id": 5,
+      "name": "eval-monitor",
+      "full_name": "OpenHands/eval-monitor",
+      "description": "Monitor benchmark evaluation",
+      "stargazers_count": 2,
+      "language": "TypeScript",
+      "updated_at": "2026-07-01T22:08:30Z",
+      "html_url": "https://github.com/OpenHands/eval-monitor"
+    },
+    {
+      "id": 26,
+      "name": "rubric",
+      "full_name": "OpenHands/rubric",
+      "description": null,
+      "stargazers_count": 2,
+      "language": "Python",
+      "updated_at": "2026-05-28T06:56:35Z",
+      "html_url": "https://github.com/OpenHands/rubric"
+    },
+    {
+      "id": 27,
+      "name": "demorec",
+      "full_name": "OpenHands/demorec",
+      "description": "Record cli and web-based demos from a script",
+      "stargazers_count": 2,
+      "language": "Python",
+      "updated_at": "2026-05-27T15:48:59Z",
+      "html_url": "https://github.com/OpenHands/demorec"
+    },
+    {
+      "id": 11,
+      "name": "champions-list",
+      "full_name": "OpenHands/champions-list",
+      "description": null,
+      "stargazers_count": 1,
+      "language": "TypeScript",
+      "updated_at": "2026-07-01T05:45:25Z",
+      "html_url": "https://github.com/OpenHands/champions-list"
+    },
+    {
+      "id": 21,
+      "name": "community-pr-dashboard",
+      "full_name": "OpenHands/community-pr-dashboard",
+      "description": null,
+      "stargazers_count": 1,
+      "language": "TypeScript",
+      "updated_at": "2026-06-17T18:43:02Z",
+      "html_url": "https://github.com/OpenHands/community-pr-dashboard"
+    },
+    {
+      "id": 24,
+      "name": "openhands-custom-image",
+      "full_name": "OpenHands/openhands-custom-image",
+      "description": "Example repo showing how to use custom images",
+      "stargazers_count": 1,
+      "language": null,
+      "updated_at": "2026-06-13T17:09:42Z",
+      "html_url": "https://github.com/OpenHands/openhands-custom-image"
+    },
+    {
+      "id": 32,
+      "name": "homebrew-openhands",
+      "full_name": "OpenHands/homebrew-openhands",
+      "description": "Distribute OpenHands CLI via Homebrew Tap",
+      "stargazers_count": 1,
+      "language": "Ruby",
+      "updated_at": "2025-12-11T21:52:39Z",
+      "html_url": "https://github.com/OpenHands/homebrew-openhands"
+    },
+    {
+      "id": 33,
+      "name": "terraform-gcp-datadog-integration",
+      "full_name": "OpenHands/terraform-gcp-datadog-integration",
+      "description": "Terraform code to make the Google Cloud Platform to Datadog log collection integration easier.",
+      "stargazers_count": 1,
+      "language": "HCL",
+      "updated_at": "2025-12-03T06:41:03Z",
+      "html_url": "https://github.com/OpenHands/terraform-gcp-datadog-integration"
+    },
+    {
+      "id": 35,
+      "name": "liteLLM-proxy",
+      "full_name": "OpenHands/liteLLM-proxy",
+      "description": null,
+      "stargazers_count": 1,
+      "language": null,
+      "updated_at": "2025-11-04T00:31:13Z",
+      "html_url": "https://github.com/OpenHands/liteLLM-proxy"
+    },
+    {
+      "id": 38,
+      "name": "test-owner-change",
+      "full_name": "OpenHands/test-owner-change",
+      "description": null,
+      "stargazers_count": 1,
+      "language": "Dockerfile",
+      "updated_at": "2025-10-20T17:22:57Z",
+      "html_url": "https://github.com/OpenHands/test-owner-change"
+    },
+    {
+      "id": 12,
+      "name": "amd-openhands-playbook",
+      "full_name": "OpenHands/amd-openhands-playbook",
+      "description": null,
+      "stargazers_count": 0,
+      "language": null,
+      "updated_at": "2026-06-30T23:56:57Z",
+      "html_url": "https://github.com/OpenHands/amd-openhands-playbook"
+    },
+    {
+      "id": 15,
+      "name": "release-actions",
+      "full_name": "OpenHands/release-actions",
+      "description": null,
+      "stargazers_count": 0,
+      "language": "JavaScript",
+      "updated_at": "2026-06-30T17:41:38Z",
+      "html_url": "https://github.com/OpenHands/release-actions"
+    },
+    {
+      "id": 25,
+      "name": "release-please-demo",
+      "full_name": "OpenHands/release-please-demo",
+      "description": null,
+      "stargazers_count": 0,
+      "language": "Shell",
+      "updated_at": "2026-06-02T13:53:20Z",
+      "html_url": "https://github.com/OpenHands/release-please-demo"
+    },
+    {
+      "id": 29,
+      "name": "incubator-program",
+      "full_name": "OpenHands/incubator-program",
+      "description": "Process and requirements for OpenHands project incubation",
+      "stargazers_count": 0,
+      "language": null,
+      "updated_at": "2026-05-18T17:45:36Z",
+      "html_url": "https://github.com/OpenHands/incubator-program"
+    },
+    {
+      "id": 34,
+      "name": "java-refactor-example",
+      "full_name": "OpenHands/java-refactor-example",
+      "description": "Example of refactoring Java code",
+      "stargazers_count": 0,
+      "language": "Java",
+      "updated_at": "2025-11-17T14:50:10Z",
+      "html_url": "https://github.com/OpenHands/java-refactor-example"
+    },
+    {
+      "id": 37,
+      "name": "rbren-sdk-experiments",
+      "full_name": "OpenHands/rbren-sdk-experiments",
+      "description": null,
+      "stargazers_count": 0,
+      "language": "Python",
+      "updated_at": "2025-11-04T00:10:55Z",
+      "html_url": "https://github.com/OpenHands/rbren-sdk-experiments"
+    }
+  ],
+  "total": 38,
+  "organizations": [
+    "OpenHands"
+  ],
+  "snapshotTakenAt": "2026-07-02T02:58:14Z"
+}

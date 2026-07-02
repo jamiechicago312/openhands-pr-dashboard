@@ -33,20 +33,20 @@ export default function WhatsNew({ darkMode }: WhatsNewProps) {
           </div>
           <ul className="space-y-2 text-sm">
             <li className="flex items-start">
-              <span className={`mr-2 mt-0.5 ${darkMode ? 'text-green-400' : 'text-green-600'}`}>•</span>
-              <span>Auto-refresh: Dashboard now refreshes data every 2 minutes</span>
+              <span className={`mr-2 mt-0.5 ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}>•</span>
+              <span>Static snapshot: data is frozen at 2026-07-01 21:58 UTC-5</span>
             </li>
             <li className="flex items-start">
               <span className={`mr-2 mt-0.5 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>•</span>
-              <span>Manual refresh: Click the 🔄 Refresh button to update data anytime</span>
+              <span>Filters still work — they apply to the snapshot in memory</span>
             </li>
             <li className="flex items-start">
               <span className={`mr-2 mt-0.5 ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>•</span>
-              <span>PRs now sorted by creation date (newest first) by default</span>
+              <span>Auto-refresh is disabled (data never changes)</span>
             </li>
             <li className="flex items-start">
               <span className={`mr-2 mt-0.5 ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>•</span>
-              <span>Support for 26+ repositories across all-hands-ai & openhands orgs</span>
+              <span>To regenerate, run <code className="px-1 py-0.5 rounded bg-gray-200 dark:bg-gray-700">npm run snapshot</code> with a GITHUB_TOKEN</span>
             </li>
           </ul>
         </div>
