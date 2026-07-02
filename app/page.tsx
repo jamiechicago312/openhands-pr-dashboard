@@ -6,6 +6,7 @@ import RepositorySelector from '@/components/RepositorySelector'
 import CustomDropdown from '@/components/CustomDropdown'
 import DashboardSkeleton from '@/components/DashboardSkeleton'
 import TickerBanner from '@/components/TickerBanner'
+import GitHubLink from '@/components/GitHubLink'
 import WhatsNew from '@/components/WhatsNew'
 import { Tooltip } from '@/components/Tooltip'
 import { DashboardData, FilterState } from '@/lib/types'
@@ -185,6 +186,9 @@ export default function Dashboard() {
           const localTime = '2026-07-01 21:58 UTC-5';
           return `Static snapshot of the OpenHands PR Review Dashboard — last updated ${localTime} (${utcTime}) — this is a sample of how the live dashboard looked at that moment, not live data`;
         })()}
+        rightAction={
+          <GitHubLink href="https://github.com/jamiechicago312/openhands-pr-dashboard" />
+        }
       />
       {/* Header - Matching wireframe exactly */}
       <header className={`${darkMode ? 'bg-gray-800' : 'bg-white'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
