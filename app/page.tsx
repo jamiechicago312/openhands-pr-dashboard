@@ -6,6 +6,7 @@ import RepositorySelector from '@/components/RepositorySelector'
 import CustomDropdown from '@/components/CustomDropdown'
 import DashboardSkeleton from '@/components/DashboardSkeleton'
 import TickerBanner from '@/components/TickerBanner'
+import GitHubLink from '@/components/GitHubLink'
 import WhatsNew from '@/components/WhatsNew'
 import { Tooltip } from '@/components/Tooltip'
 import { DashboardData, FilterState } from '@/lib/types'
@@ -220,6 +221,10 @@ export default function Dashboard() {
               >
                 {darkMode ? '☀️ Light' : '🌙 Dark'}
               </button>
+              <GitHubLink
+                href="https://github.com/jamiechicago312/openhands-pr-dashboard"
+                darkMode={darkMode}
+              />
             </div>
           </div>
         </div>
