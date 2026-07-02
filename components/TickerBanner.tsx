@@ -1,9 +1,8 @@
 interface TickerBannerProps {
   message: string;
-  rightAction?: React.ReactNode;
 }
 
-export default function TickerBanner({ message, rightAction }: TickerBannerProps) {
+export default function TickerBanner({ message }: TickerBannerProps) {
   const repeated = `${message}   •   `;
   const content = repeated.repeat(8);
 
@@ -25,11 +24,6 @@ export default function TickerBanner({ message, rightAction }: TickerBannerProps
             <span aria-hidden="true">{content}</span>
           </div>
         </div>
-        {rightAction && (
-          <div className="relative z-20 flex-shrink-0 border-l border-amber-700/30 bg-amber-300">
-            {rightAction}
-          </div>
-        )}
       </div>
     </div>
   );

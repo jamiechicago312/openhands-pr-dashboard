@@ -186,9 +186,6 @@ export default function Dashboard() {
           const localTime = '2026-07-01 21:58 UTC-5';
           return `Static snapshot of the OpenHands PR Review Dashboard — last updated ${localTime} (${utcTime}) — this is a sample of how the live dashboard looked at that moment, not live data`;
         })()}
-        rightAction={
-          <GitHubLink href="https://github.com/jamiechicago312/openhands-pr-dashboard" />
-        }
       />
       {/* Header - Matching wireframe exactly */}
       <header className={`${darkMode ? 'bg-gray-800' : 'bg-white'} border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
@@ -224,6 +221,10 @@ export default function Dashboard() {
               >
                 {darkMode ? '☀️ Light' : '🌙 Dark'}
               </button>
+              <GitHubLink
+                href="https://github.com/jamiechicago312/openhands-pr-dashboard"
+                darkMode={darkMode}
+              />
             </div>
           </div>
         </div>
