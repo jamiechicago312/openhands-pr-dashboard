@@ -16,10 +16,10 @@ export default function TickerBanner({ message }: TickerBannerProps) {
         <span className="flex-shrink-0 bg-amber-500 px-3 py-2 text-xs font-bold uppercase tracking-wider text-amber-950 shadow-sm">
           Snapshot
         </span>
-        <div className="relative flex-1 overflow-hidden">
+        <div className="group/ticker relative flex-1 overflow-hidden">
           <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 bg-gradient-to-r from-amber-300 to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 bg-gradient-to-l from-amber-300 to-transparent" />
-          <div className="flex w-max animate-marquee whitespace-nowrap py-2 text-sm font-medium">
+          <div className="flex w-max animate-marquee whitespace-nowrap py-2 text-sm font-medium group-hover/ticker:[animation-play-state:paused]">
             <span>{content}</span>
             <span aria-hidden="true">{content}</span>
           </div>
